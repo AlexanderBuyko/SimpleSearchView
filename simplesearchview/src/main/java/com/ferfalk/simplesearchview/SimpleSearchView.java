@@ -90,6 +90,7 @@ public class SimpleSearchView extends FrameLayout {
     private int tabLayoutInitialHeight;
 
     private OnQueryTextListener onQueryChangeListener;
+    private OnBackButtonClickListener onBackButtonClickListener;
     private SearchViewListener searchViewListener;
 
     private boolean searchIsClosing = false;
@@ -226,7 +227,13 @@ public class SimpleSearchView extends FrameLayout {
     }
 
     private void initClickListeners() {
-        backButton.setOnClickListener(v -> closeSearch());
+        backButton.setOnClickListener(v -> {
+            if (onBackButtonClickListener != null) {
+                onBackButtonClickListener.involve();
+            } else {
+                closeSearch();
+            }
+        });
         clearButton.setOnClickListener(v -> clearSearch());
         voiceButton.setOnClickListener(v -> voiceSearch());
     }
@@ -801,6 +808,10 @@ public class SimpleSearchView extends FrameLayout {
         onQueryChangeListener = listener;
     }
 
+    public void setOnBackButtonClickListener(OnBackButtonClickListener listener) {
+        onBackButtonClickListener = listener;
+    }
+
     /**
      * Set this listener to listen to search open and close events
      *
@@ -855,6 +866,12 @@ public class SimpleSearchView extends FrameLayout {
             out.writeString(voiceSearchPrompt);
             out.writeInt(keepQuery ? 1 : 0);
         }
+    }
+
+    public interface OnBackButtonClickListener{
+
+        void involve();
+
     }
 
 
